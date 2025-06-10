@@ -121,6 +121,68 @@ Confirms successful domain replication and authentication across the network.
 
 </p>
 
+<img width="954" alt="image" src="https://github.com/user-attachments/assets/a287905e-9278-4bd0-9e14-e478b8c23b6f" />
+
+<p>
+ Dealing with Account Lockouts
+Get logged into dc-1
+Pick a random user account you created previously
+Attempt to log in with it 10 times with a bad password
+
+Configure Group Policy to Lockout the account after 5 attempts
+
+
+🔒 Configure Account Lockout Policy via Group Policy
+
+1. **Open Group Policy Management Console (GPMC)**
+
+   * Log into `DC-1`
+   * Run: `gpmc.msc`
+
+2. **Create or Edit a GPO**
+
+   * Navigate to: `Group Policy Objects`
+   * Create a new GPO (e.g., **"Account Lockout Policy"**) or edit an existing one
+
+3. **Locate Account Lockout Policy Settings**
+
+   * Path:
+     `Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Account Lockout Policy`
+
+4. **Configure These Settings:**
+
+   * **Account Lockout Duration:** 10 minutes
+   * **Account Lockout Threshold:** 5 invalid logon attempts
+   * **Reset Counter After:** 10 minutes
+</p>
+
+<img width="908" alt="image" src="https://github.com/user-attachments/assets/cebef8c5-b84a-46a0-a7d6-8410996f9419" />
+
+<p>
+ 🚫 Enable/Disable Accounts & Observe Logs
+
+🔒 Disable & Re-enable User Account
+
+* In **Active Directory Users and Computers (ADUC)** on `DC-1`:
+
+  * Right-click a user and select **Disable Account**
+* Attempt to log in on `Client-1` with the disabled account
+  → 🛑 **Expected:** "Your account has been disabled" error
+* Back in ADUC, **Re-enable** the account
+* Attempt login again → ✅ **Expected:** Successful login
+
+📋 Observe Security Logs
+
+* On `DC-1` (Domain Controller):
+
+  * Open **Event Viewer → Windows Logs → Security**
+  * Look for events related to account logon attempts or lockouts
+* On `Client-1`:
+
+  * Open **Event Viewer** and check local security logs for failed/successful logon attempts
+
+
+</p>
 
 
 
