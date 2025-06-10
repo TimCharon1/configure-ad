@@ -1,16 +1,9 @@
-<p align="center">
-<img src="https://i.imgur.com/Clzj7Xs.png" alt="osTicket logo"/>
-</p>
-
-<h1>osTicket - Prerequisites and Installation</h1>
-This tutorial outlines the prerequisites and installation of the open-source help desk ticketing system osTicket.<br />
+![image](https://github.com/user-attachments/assets/2ba01b32-aab9-4e2c-9ba2-6164a3522984)
 
 
-<h2>Video Demonstration</h2>
+<h1>Active Directory - Prerequisites and Installation</h1>
+This tutorial outlines the prerequisites and installation of Active Directory as well as connecting a main client to a Domain Controller.<br />
 
-- ### [YouTube: How To Install osTicket with Prerequisites](https://www.youtube.com)
-
-<h2>Environments and Technologies Used</h2>
 
 - Microsoft Azure (Virtual Machines/Compute)
 - Remote Desktop
@@ -20,44 +13,116 @@ This tutorial outlines the prerequisites and installation of the open-source hel
 
 - Windows 10</b> (21H2)
 
-<h2>List of Prerequisites</h2>
-
-- Item 1
-- Item 2
-- Item 3
-- Item 4
-- Item 5
-
 <h2>Installation Steps</h2>
 
+![image](https://github.com/user-attachments/assets/9f2d79a3-dc0a-42d7-8846-3844881c6ea3)
+![image](https://github.com/user-attachments/assets/f0265b52-c7e8-404c-b46b-7fe476c78f35)
+
+![image](https://github.com/user-attachments/assets/808056c6-9687-44c4-b531-0bfdde0d13c7)
+
 <p>
-<img src="https://i.imgur.com/chyaFyl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+🏗️ Domain Controller Setup (Azure)
+
+* Create a **Resource Group**
+* Create a **Virtual Network** and **Subnet**
+* Deploy a **Windows Server 2022 VM** named `DC-1`
+
+  * Username: `labuser`
+  * Password: `Cyberlab123!`
+* Set **Private IP** on `DC-1` NIC to **Static**
+* Log into `DC-1` via RDP and **disable Windows Firewall** (for testing)
+
 </p>
 <br />
 
+![image](https://github.com/user-attachments/assets/0f826d04-29a9-4b0e-ae3c-fcc2cd07cab6)
+<img width="648" alt="image" src="https://github.com/user-attachments/assets/370ea6b3-f1be-44e8-8611-cbf77e8d442f" />
+
+
+
 <p>
-<img src="https://i.imgur.com/chyaFyl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
+
+🖥️ Client-1 Setup (Azure)
+
+* Create a **Windows 10 VM** named `Client-1`
+
+  * Username: `labuser`
+  * Password: `Cyberlab123!`
+* Attach to the **same region and Virtual Network** as `DC-1`
+* Set **DNS settings** to `DC-1`'s **Private IP**
+* Restart `Client-1` from the Azure Portal
+* Log in and **ping DC-1’s Private IP** to confirm connectivity
+* In PowerShell, run: `ipconfig /all`
+
+  * Verify DNS shows `DC-1`'s Private IP
+<br />
+
+![image](https://github.com/user-attachments/assets/8bb89543-6385-48e2-8d39-89e5e9c4ddb2)
+
 <p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+🏛️ Install Active Directory on DC-1
+
+* Log into `DC-1`
+* Install **Active Directory Domain Services (AD DS)**
+* Promote the server to a **Domain Controller**
+
+  * Create a **new forest**: `mydomain.com` *(you can choose any domain name)*
+* Restart the VM
+* Log back in as: `mydomain.com\labuser`
+
+
 </p>
 <br />
 
+![image](https://github.com/user-attachments/assets/cb136002-9ae8-43bc-9aa2-9b2d925db7b4)
+![image](https://github.com/user-attachments/assets/26aed8b0-fd25-4aef-812d-7259c76e418e)
+
+
 <p>
-<img src="https://i.imgur.com/DJmEXEB.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+👩‍💼 Create Domain Admin User
+
+* On `DC-1`, open **Active Directory Users and Computers (ADUC)**
+* Create two OUs:
+
+  * `_EMPLOYEES`
+  * `_ADMINS`
+* Create user:
+
+  * **Name:** Jane Doe
+  * **Username:** `jane_admin`
+  * **Password:** `Cyberlab123!`
+* Move `jane_admin` to `_ADMINS` OU
+* Add `jane_admin` to the **Domain Admins** security group
+* Log out and back in as: `mydomain.com\jane_admin`
+* Use `jane_admin` as your admin account going forward
+
 </p>
 <br />
 
-<p>
-<img src="https://i.imgur.com/DJmEXEB.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img width="584" alt="image" src="https://github.com/user-attachments/assets/aed4acf1-cf4b-4f02-8140-c84f8c0983e5" />
+<img width="262" alt="image" src="https://github.com/user-attachments/assets/9a19bd13-55e9-4909-b054-88164f343f53" />
+<img width="518" alt="image" src="https://github.com/user-attachments/assets/f5777d46-a9a9-453d-a6ad-6d8f6b75e262" />
+
+
+<p>👥 Bulk Create Users & Test Domain Login
+
+* Log into `DC-1` as `jane_admin`
+* Open **PowerShell ISE** as Administrator
+* Create a new script file and **paste the user creation script**
+* Run the script and observe users being created in the `_EMPLOYEES` OU
+* Open **Active Directory Users and Computers (ADUC)** to verify accounts
+
+🔑 Test Login
+On Client-1, attempt to log in with one of the new user accounts
+
+Use the password defined in the script
+
+Confirms successful domain replication and authentication across the network.
+
 </p>
-<p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-</p>
-<br />
+
+
+
+
+
+
